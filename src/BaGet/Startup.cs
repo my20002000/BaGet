@@ -1,9 +1,11 @@
 using System;
+using System.IO;
 using BaGet.Core;
 using BaGet.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.Extensions.Configuration;
@@ -56,22 +58,8 @@ namespace BaGet
 
         private void ConfigureBaGetApplication(BaGetApplication app)
         {
-            // Add database providers.
-            app.AddAzureTableDatabase();
-            app.AddMySqlDatabase();
-            app.AddPostgreSqlDatabase();
             app.AddSqliteDatabase();
-            app.AddSqlServerDatabase();
-
-            // Add storage providers.
             app.AddFileStorage();
-            app.AddAliyunOssStorage();
-            app.AddAwsS3Storage();
-            app.AddAzureBlobStorage();
-            app.AddGoogleCloudStorage();
-
-            // Add search providers.
-            app.AddAzureSearch();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -86,7 +74,7 @@ namespace BaGet
             }
 
             app.UseForwardedHeaders();
-            app.UsePathBase(options.PathBase);
+            app.UsePathBase(options.PathBase=="."?"/": options.PathBase);
 
             app.UseStaticFiles();
             app.UseRouting();
